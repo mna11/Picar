@@ -1,4 +1,14 @@
 import axios from 'axios';
+import {
+    getMockCarById,
+    getMockCarsByModel,
+    getMockDealerById,
+    getMockDealerCars,
+    mockDealers,
+    mockRecommendations,
+} from '../mock/mockData';
+
+const USE_MOCK = process.env.REACT_APP_USE_MOCK === 'true';
 
 // Axios 인스턴스 생성
 const api = axios.create({
@@ -9,7 +19,7 @@ const api = axios.create({
     },
 });
 
-export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+export const API_BASE_URL = USE_MOCK ? '' : process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
 
 // API
 
@@ -17,6 +27,13 @@ export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localh
 export const surveyAPI = {
     // survey 받아서 gpt에 넘기고 결과 받아오기
     submitSurvey: async (answers: QuestionAnswers): Promise<SurveyResponse> => {
+        if (USE_MOCK) {
+            return {
+                success: true,
+                recommendations: mockRecommendations
+            };
+        }
+
         try {
             const response = await api.post('/survey', answers);
             const recommendations = Array.isArray(response.data) ? response.data : [];
@@ -35,6 +52,13 @@ export const surveyAPI = {
 
     // AI 재추천 -> 지금은 submitSurvey와 동일 -> 추후 개선 예정
     retryRecommendation: async (answers: QuestionAnswers): Promise<SurveyResponse> => {
+        if (USE_MOCK) {
+            return {
+                success: true,
+                recommendations: mockRecommendations
+            };
+        }
+
         try {
             const response = await api.post('/survey', answers);
             const recommendations = Array.isArray(response.data) ? response.data : [];
@@ -56,6 +80,14 @@ export const surveyAPI = {
 export const carAPI = {
     //id로 해당 중고차의 상세 정보 다 불러오기
     getCarDetail: async (carId: string): Promise<CarDetailAPIResponse> => {
+        if (USE_MOCK) {
+            const car = getMockCarById(carId);
+
+            return car
+                ? { success: true, data: car }
+                : { success: false, error: '차량 정보를 찾을 수 없습니다.' };
+        }
+
         try {
             const response = await api.get(`/cars/${carId}`);
             
@@ -86,6 +118,13 @@ export const carAPI = {
 
   // 모델명으로 차량 목록 조회
   getCarsByModel: async (modelName: string): Promise<CarModelListResponse> => {
+    if (USE_MOCK) {
+        return {
+            success: true,
+            data: getMockCarsByModel(modelName)
+        };
+    }
+
     try {
         const response = await api.get(`/cars/model/${modelName}`);
         
@@ -129,6 +168,13 @@ export const carAPI = {
 export const dealerAPI = {
     // 등록된 모든 딜러 목록 조회
     getDealers: async (): Promise<DealerListResponse> => {
+        if (USE_MOCK) {
+            return {
+                success: true,
+                data: mockDealers
+            };
+        }
+
         try {
             const response = await api.get('/dealers');
             
@@ -168,6 +214,14 @@ export const dealerAPI = {
 
     // dealersId를 가진 dealer 하나 조회
     getDealerById: async (dealerId: string | number): Promise<DealerDetailResponse> => {
+        if (USE_MOCK) {
+            const dealer = getMockDealerById(dealerId);
+
+            return dealer
+                ? { success: true, data: dealer }
+                : { success: false, error: '딜러 정보를 찾을 수 없습니다.' };
+        }
+
         try {
             const response = await api.get(`/dealers/${dealerId}`);
             
@@ -203,6 +257,13 @@ export const dealerAPI = {
     },
     // 특정 딜러의 보유 차량 목록 조회
     getDealerCars: async (dealerId: string | number): Promise<DealerCarsResponse> => {
+        if (USE_MOCK) {
+            return {
+                success: true,
+                data: getMockDealerCars(dealerId)
+            };
+        }
+
         try {
             const response = await api.get(`/dealers/${dealerId}/cars`);
             
@@ -286,11 +347,11 @@ export interface CarDetailAPIResponse {
 
 //    getCarsByModel
 export interface CarModelItem {
-    id: 1;            // 차량 id 추가
+    id: number;            // 차량 id 추가
     brand: string;
     model: string;
     modelYear: number; // 출시 연도 추가
-    releaseDate: number; // 연식 추가
+    releaseDate: string; // 연식 추가
     origin: string;
     fuelType: string; 
     engineDisplacement: number; // 배기량 추가
@@ -348,11 +409,11 @@ export interface DealerDetailResponse {
 
 //        getDealerCars
 export interface DealerCarItem {
-    id: 1;            // 차량 id 추가
+    id: number;            // 차량 id 추가
     brand: string;
     model: string;
     modelYear: number; // 출시 연도 추가
-    releaseDate: number; // 연식 추가
+    releaseDate: string; // 연식 추가
     origin: string;
     fuelType: string; 
     engineDisplacement: number; // 배기량 추가
@@ -368,6 +429,7 @@ export interface DealerCarItem {
     dealerId: number; // 해당 차량을 보유 중인 딜러 id 추가
     position: string; // 딜러 직급
     imagePaths: string[]; // 차량 사진 추가
+    dealerImagePath: string; // 딜러 사진 추가
 }
 
 export interface DealerCarsResponse {
