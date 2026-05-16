@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import './style.css';
 
 export interface DealerItemProps {
@@ -21,8 +20,6 @@ const DealerItem: React.FC<DealerItemProps> = ({
   imageUrl,
   onClick,
 }) => {
-  const navigate = useNavigate();
-
   return (
     <div className="dealer-card-vertical" onClick={onClick}>
       <div className="dealer-image-wrapper">

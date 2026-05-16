@@ -15,29 +15,14 @@ import { type DealerInfoProps } from "../types/carType";
 import OptionsInfo from '../component/OptionsInfo/OptionsInfo';
 import { type OptionsInfoProps } from '../types/carType';
 import Footer from './Footer';
-import { FooterProps } from '../types/carType';
 import { carAPI } from "../../global/api/Axios";
 import { API_BASE_URL } from "../../global/api/Axios"
 
-import carImg1 from "../../assets/test/carImgs/carImg1.png";
-import carImg2 from "../../assets/test/carImgs/carImg2.png";
-import carImg3 from "../../assets/test/carImgs/carImg3.png";
-import carImg4 from "../../assets/test/carImgs/carImg4.png";
-import carImg5 from "../../assets/test/carImgs/carImg5.png";
-import carImg6 from "../../assets/test/carImgs/carImg6.png";
-import carImg7 from "../../assets/test/carImgs/carImg7.png";
-import carImg8 from "../../assets/test/carImgs/carImg8.png";
-import carImg9 from "../../assets/test/carImgs/carImg9.png";
-import carImg10 from "../../assets/test/carImgs/carImg10.png";
-import carImg11 from "../../assets/test/carImgs/carImg11.png";
-import carImg12 from "../../assets/test/carImgs/carImg12.png";
-import dealerImg from "../../assets/test/dealer_img.png";
-
 import "./style.css"
 
-const Layout = () => {
+    const Layout = () => {
     const navigate = useNavigate();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     const [carData, setCarData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -48,7 +33,7 @@ const Layout = () => {
     }
 
     const makeCarImgs = (imagePaths: string[]): string[] => {
-      const carImgs: string[] = imagePaths.map((link, index) => getFullImgUrl(link));
+      const carImgs: string[] = imagePaths.map((link) => getFullImgUrl(link));
       return carImgs;
     }
 
@@ -162,46 +147,6 @@ const Layout = () => {
       </div>
     );
 };
-
-
-// SampleData들
-const imgs: string[] = [
-    carImg1,
-    carImg2,
-    carImg3,
-    carImg4,
-    carImg5,
-    carImg6,
-    carImg7,
-    carImg8,
-    carImg9,
-    carImg10,
-    carImg11,
-    carImg12
-];
-
-const carInfoSample: CarBasicInfoProps["carInfo"] = {
-  id: 1,
-  brand: "Hyundai Sonata",
-  model: "Smart 2.0",
-  releaseDate: "2022-08-17",
-  modelYear: 2022,
-  mileage: 35000,
-  price: 18900000
-};
-
-const carSpecsSample: CarSpecsProps["specs"] = {
-    transmission: "자동",                 // 변속기
-    warranty: "소모품",                        // 제조사 보증
-    drivetrain: "후륜",                        // 구동방식
-    insuranceHistory: "0",                   // 보험이력
-    fuelType: "경유",                      // 유종
-    accidentHistory: "무사고",                 // 사고
-    displacement: "1998",                    // 배기량
-    power: "192",                           // 출력
-    fuelEfficiency: "14.5",               // 연비
-};
-
 const aiRecommendationSample: AiRecommendationProps['recommendation'] = {
   title: 'AI가 추천하는 이유',
   reasons: [
@@ -240,15 +185,6 @@ const aiRecommendationSample: AiRecommendationProps['recommendation'] = {
       ]
     }
   ]
-};
-
-const dealerSample: DealerInfoProps["dealer"] = {
-  id: 1,
-  name: "문종수",
-  title: "부장", 
-  company: "성수자동차사",
-  description: "",
-  profileImage: dealerImg 
 };
 
 const optionsSample: OptionsInfoProps["options"] = [

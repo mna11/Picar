@@ -46,7 +46,7 @@ const CarListSlider: React.FC<CarListSliderProps> = ({ carList, onClick }) => {
   };
 
   const handleClick = (carId: number) => {
-    if (startPageX - endPageX == 0) {
+    if (startPageX - endPageX === 0) {
       onClick(carId);
     }
   }

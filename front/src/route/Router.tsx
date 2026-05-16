@@ -10,9 +10,7 @@ import DealerDetailPage from '../dealerdetail/pages/DealerDetailPage';
 
 import SurveyController from "../Survey/container/SurveyController";
 import Recommendation from "../AiRecommendationResult/pages/AiRecommendationResult";
-import Loading from "../AiRecommendationLoading/pages/AiRecommendationLoading"
 import CarDetail from "../CarDetail/pages/CarDetail";
-import SurveyComplete from "../SurveyComplete/pages/SurveyComplete";
 
 const Router: React.FC = () => {
   return (

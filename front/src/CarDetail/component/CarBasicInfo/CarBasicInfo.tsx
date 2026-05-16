@@ -2,7 +2,7 @@ import "./CarBasicInfo.css"
 import { type CarBasicInfoProps } from "../../types/carType";
 
 const CarBasicInfo: React.FC<CarBasicInfoProps> = ({carInfo}) => {
-    const {id, brand, model, modelYear, releaseDate, mileage, price} = carInfo;
+    const {brand, model, modelYear, releaseDate, mileage, price} = carInfo;
 
     const formatModel = (model: string) => {
         return model.replace(/_/g, ' ');

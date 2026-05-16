@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import CarCard from '../component/CarCard/CarCard';
 import img from "../../assets/test/BMW_320d.png" // Test용 사진
 import AiRecommendationLoading from '../../AiRecommendationLoading/pages/AiRecommendationLoading';
-import { type CarCardProps } from '../types/resultType';
-import { surveyAPI, carAPI, type QuestionAnswers, API_BASE_URL } from '../../global/api/Axios';
+import { surveyAPI, carAPI, API_BASE_URL } from '../../global/api/Axios';
 
 import "./style.css"
+
+const getFullImgUrl = (imagePath: string): string => {
+    return `${API_BASE_URL}${imagePath}`;
+}
 
 const Layout: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -17,15 +20,11 @@ const Layout: React.FC = () => {
     const [loading, setLoading] = useState(true); //추가
     const navigate = useNavigate();
 
-    const getFullImgUrl = (imagePath: string): string => {
-        return `${API_BASE_URL}${imagePath}`;
-    }
-
     // URL 쿼리에서 데이터 파싱
     const recommendationsParam = searchParams.get('recommendations');
     const answersParam = searchParams.get('answers');
-    const recommendations = JSON.parse(recommendationsParam);
-    const answers = JSON.parse(answersParam);
+    const recommendations = useMemo(() => JSON.parse(recommendationsParam || '[]'), [recommendationsParam]);
+    const answers = useMemo(() => JSON.parse(answersParam || '{}'), [answersParam]);
 
     useEffect(() => {
         if (recommendations.length === 0) {
@@ -36,7 +35,7 @@ const Layout: React.FC = () => {
         const fetchCarData = async () => {
             try {
                 setLoading(true);
-                const carPromises = recommendations.map(async (model, index) => {
+                const carPromises = recommendations.map(async (model) => {
                     try {
                         // 실제 API에서 데이터 가져오기
                         const result = await carAPI.getCarsByModel(model);
@@ -85,7 +84,7 @@ const Layout: React.FC = () => {
             } catch (error) {
                 console.error('차량 데이터 로딩 실패:', error);
                 // 전체 실패 시 기본 데이터 사용
-                const defaultCarData = recommendations.map((model, index) => ({
+                const defaultCarData = recommendations.map(() => ({
                     brand: "Infiniti",
                     model: "Q50",
                     releaseDate: 2025,
@@ -103,7 +102,7 @@ const Layout: React.FC = () => {
         if (recommendations.length > 0) {
             fetchCarData();
         }
-    }, []);
+    }, [navigate, recommendations]);
     
     const handleRetry = async () => {
         try {
@@ -144,6 +143,11 @@ const Layout: React.FC = () => {
     if (isRetrying) {
         return <AiRecommendationLoading />;
     }
+
+    if (loading) {
+        return <AiRecommendationLoading />;
+    }
+
     return (
         <div className="result">
             <Header title="AI 추천 결과" goToPrevious={goToPrevious}/>
@@ -164,16 +168,4 @@ const Layout: React.FC = () => {
         </div>
     );
 };
-
-
-// test용 data
-// const car: CarCardProps["car"] = {
-//     model: "BMW 320d",
-//     releaseDate: 2019,
-//     displacement: "1999",
-//     fuelType: "디젤",
-//     averageMaintenancePrice: 74,
-//     image: img
-// }
-
 export default Layout;

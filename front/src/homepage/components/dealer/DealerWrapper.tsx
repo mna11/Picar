@@ -81,7 +81,7 @@ const DealerWrapper: React.FC = () => {
   }, []);
 
   const handleClick = (id: number): void => {
-    if (startPageX - endPageX == 0) {
+    if (startPageX - endPageX === 0) {
       navigate(`/dealerdetail/${id}`);
     }
   }

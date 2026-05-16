@@ -44,7 +44,7 @@ const CarImageGallery: React.FC<CarImageGalleryProps> = ({ images }) => {
   };
 
   const handleClick = (imgId: number) => {
-    if (startPageX - endPageX == 0) {
+    if (startPageX - endPageX === 0) {
       setSelectedImageIndex(imgId);
     }
   }
